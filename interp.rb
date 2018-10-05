@@ -137,7 +137,7 @@ def evaluate(exp, env)
         execution = func.execution
         arguments = exp[2..-1].map { |ast| evaluate(ast, env) }
         env = arg_names.zip(arguments).to_h
-        execution.call(env)
+        evaluate(execution, env)
 
         #
         ## Problem 5: Function definition
@@ -174,10 +174,7 @@ def evaluate(exp, env)
       func_name = exp[1]
       arg_names = exp[2...-1].flatten
       execution_ast = exp.last
-      execution = lambda do |env|
-        evaluate(execution_ast, env)
-      end
-      $function_definitions[func_name] = Function.new(arg_names, execution)
+      $function_definitions[func_name] = Function.new(arg_names, execution_ast)
 
 
 #

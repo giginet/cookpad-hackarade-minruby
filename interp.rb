@@ -186,16 +186,18 @@ def evaluate(exp, env)
 
 # You don't need advices anymore, do you?
     when "ary_new"
-      raise(NotImplementedError) # Problem 6
+      exp[1..-1].map { |ast| evaluate(ast, env) }
 
     when "ary_ref"
-      raise(NotImplementedError) # Problem 6
+      array, index = exp[1..2].map { |ast| evaluate(ast, env) }
+      array[index]
 
     when "ary_assign"
-      raise(NotImplementedError) # Problem 6
+      array, index, value = exp[1..3].map { |ast| evaluate(ast, env) }
+      array[index] = value
 
     when "hash_new"
-      raise(NotImplementedError) # Problem 6
+      exp[1..-1].map { |ast| evaluate(ast, env) }.each_slice(2).to_h
 
     else
       p("error")

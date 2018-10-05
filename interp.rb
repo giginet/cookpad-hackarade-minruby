@@ -160,10 +160,11 @@ def evaluate(exp, env)
   end
 end
 
+if ARGV[0]
+  $function_definitions = {}
+  env = {}
 
-$function_definitions = {}
-env = {}
-
-# `minruby_load()` == `File.read(ARGV.shift)`
-# `minruby_parse(str)` parses a program text given, and returns its AST
-evaluate(minruby_parse(minruby_load()), env)
+  # `minruby_load()` == `File.read(ARGV.shift)`
+  # `minruby_parse(str)` parses a program text given, and returns its AST
+  evaluate(minruby_parse(minruby_load()), env)
+end

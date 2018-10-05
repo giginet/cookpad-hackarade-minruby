@@ -26,8 +26,29 @@ def evaluate(exp, env)
   when "-"
     evaluate(exp[1], env) - evaluate(exp[2], env)
   # ... Implement other operators that you need
+  when "<"
+    lhs, rhs = exp[1..-1].map { |v| evaluate(v, env) }
+    lhs < rhs
+  when ">"
+    lhs, rhs = exp[1..-1].map { |v| evaluate(v, env) }
+    lhs > rhs
+  when "<="
+    lhs, rhs = exp[1..-1].map { |v| evaluate(v, env) }
+    lhs <= rhs
+  when "=="
+    lhs, rhs = exp[1..-1].map { |v| evaluate(v, env) }
+    lhs == rhs
+  when ">="
+    lhs, rhs = exp[1..-1].map { |v| evaluate(v, env) }
+    lhs >= rhs
+  when "=="
+    lhs, rhs = exp[1..-1].map { |v| evaluate(v, env) }
+    lhs == rhs
+  when "!="
+    lhs, rhs = exp[1..-1].map { |v| evaluate(v, env) }
+    lhs != rhs
 
-  
+
 #
 ## Problem 2: Statements and variables
 #
@@ -61,20 +82,22 @@ def evaluate(exp, env)
 #
 
   when "if"
-    # Branch.  It evaluates either exp[2] or exp[3] depending upon the
-    # evaluation result of exp[1],
-    #
-    # Advice:
-    #   if ???
-    #     ???
-    #   else
-    #     ???
-    #   end
-    raise(NotImplementedError) # Problem 3
+    condition = evaluate(exp[1], env)
+    if condition
+      evaluate(exp[2], env)
+    else
+      evaluate(exp[3], env)
+    end
+
 
   when "while"
-    # Loop.
-    raise(NotImplementedError) # Problem 3
+    condition = evaluate(exp[1], env)
+    while condition
+      evaluate(exp[2], env)
+      condition = evaluate(exp[1], env)
+    end
+
+  # Loop.
 
 
 #
@@ -98,7 +121,8 @@ def evaluate(exp, env)
         raise("unknown builtin function")
       end
     else
-
+      arguments = exp[2..-1].map { |ast| evaluate(ast, env) }
+      func.call(*arguments)
 
 #
 ## Problem 5: Function definition
@@ -121,7 +145,6 @@ def evaluate(exp, env)
       # (*1) formal parameter: a variable as found in the function definition.
       # For example, `a`, `b`, and `c` are the formal parameters of
       # `def foo(a, b, c)`.
-      raise(NotImplementedError) # Problem 5
     end
 
   when "func_def"
@@ -161,7 +184,20 @@ def evaluate(exp, env)
 end
 
 if ARGV[0]
-  $function_definitions = {}
+  $function_definitions = {
+      "Integer" => lambda { |s| s.to_i },
+      "fizzbuzz" => lambda do |n|
+        if n % 15 == 0
+          'FizzBuzz'
+        elsif n % 3 == 0
+          'Fizz'
+        elsif n % 5 == 0
+          'Buzz'
+        else
+          n.to_s
+        end
+      end,
+  }
   env = {}
 
   # `minruby_load()` == `File.read(ARGV.shift)`

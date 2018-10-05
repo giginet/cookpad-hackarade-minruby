@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 require "minruby"
 require "minitest/autorun"
 require_relative './interp'
@@ -10,9 +11,5 @@ def exec(statement)
 end
 
 describe 'GiginyanRubyInteprter' do
-  describe "when asked about cheeseburgers" do
-    it "must respond positively" do
-      exec("p(1 + 1)").must_equal 2
-    end
-  end
+  it { exec("p(1 + 1)").must_equal 2 }
 end

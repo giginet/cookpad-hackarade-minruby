@@ -121,8 +121,11 @@ def evaluate(exp, env)
         raise("unknown builtin function")
       end
     else
+      arg_names = func.arg_names
+      execution = func.execution
       arguments = exp[2..-1].map { |ast| evaluate(ast, env) }
-      func.call(*arguments)
+      env = arg_names.zip(arguments).to_h
+      execution.call(env)
 
 #
 ## Problem 5: Function definition
@@ -156,7 +159,13 @@ def evaluate(exp, env)
     # All you need is store them into $function_definitions.
     #
     # Advice: $function_definitions[???] = ???
-    raise(NotImplementedError) # Problem 5
+    func_name = exp[1]
+    arg_names = exp[2...-1].flatten
+    execution_ast = exp.last
+    execution = lambda do |env|
+      evaluate(execution_ast, env)
+    end
+    $function_definitions[func_name] = Function.new(arg_names, execution)
 
 
 #
@@ -182,6 +191,8 @@ def evaluate(exp, env)
     raise("unknown node")
   end
 end
+
+Function = Struct.new(:arg_names, :execution)
 
 if ARGV[0]
   $function_definitions = {

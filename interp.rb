@@ -14,13 +14,16 @@ def evaluate(exp, env)
 
   when "lit"
     exp[1] # return the immediate value as is
-
+  when "*"
+    evaluate(exp[1], env) * evaluate(exp[2], env)
+  when "/"
+    evaluate(exp[1], env) / evaluate(exp[2], env)
+  when "%"
+    evaluate(exp[1], env) % evaluate(exp[2], env)
   when "+"
     evaluate(exp[1], env) + evaluate(exp[2], env)
   when "-"
     evaluate(exp[1], env) - evaluate(exp[2], env)
-  when "*"
-    raise(NotImplementedError) # Problem 1
   # ... Implement other operators that you need
 
   
